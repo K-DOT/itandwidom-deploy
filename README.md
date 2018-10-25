@@ -1,9 +1,9 @@
 # itandwisdom-deploy
-Deploys application in !!!DEV!!! environment
-Uses: https://github.com/elastic/ansible-elasticsearch
-
-Usage example:
-
+Deploys application in !!!DEV!!! environment  
+Uses: https://github.com/elastic/ansible-elasticsearch  
+  
+Usage example:  
+  
 ```
 - hosts: dev
   roles:
