@@ -1,0 +1,60 @@
+---
+# tasks file for project_setup
+- name: Install requred packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "git"
+    - "mysql"
+    - "mysql-devel"
+    - "gcc"
+    - "python36-devel"
+    - "libjpeg"
+    - "libjpeg-devel"
+- name: Delete old version
+  file:
+    path: '{{ project_dir }}'
+    state: absent
+- name: Create project directory
+  file:
+    path: '{{ project_dir }}'
+    state: directory
+    mode: 0755
+- name: clone project
+  shell:
+    cmd: 'git clone -b {{ branch }}  {{ project_git_url }}'
+    chdir: '{{ project_dir }}'
+- name: Install requirements
+  pip:
+    requirements: 'requirements.txt'
+    virtualenv: '{{ venv_dir }}'
+    chdir: '{{ project_dir }}/{{ project_name }}'
+- name: Copy secret key
+  copy:
+    src: '{{ role_path }}/files/secret_key.py'
+    dest: '{{ project_dir }}/{{ project_name }}/{{ project_name }}/secret_key.py'
+- name: Manage
+  django_manage:
+    command: '{{ item }}'
+    app_path: '{{ project_dir }}/{{ project_name }}'
+    virtualenv: '{{ venv_dir }}'
+  with_items:
+    - "migrate"
+    - "check"
+    - "compilemessages"
+- name: Create superuser
+  shell:
+    cmd: "echo \"from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@{{ project_name }}.com', 'changemeASAP')\" | {{ venv_dir }}/bin/python manage.py shell"
+    chdir:  '{{ project_dir }}/{{ project_name }}'
+- debug:
+    msg: "Created user 'admin' with password changemeASAP. Change this immediately!"
+- name: Create service file for dev 
+  template:
+    src: '{{ role_path }}/templates/itandwisdom.service.j2'
+    dest: /etc/systemd/system/itandwisdom.service
+- name: Start service
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: itandwisdom

@@ -1,0 +1,4 @@
+---
+# vars file for itandwisdom
+project_name: 'itandwisdom'
+venv_dir: '~/.virtualenv/'

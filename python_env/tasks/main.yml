@@ -1,0 +1,15 @@
+---
+# tasks file for installing python3
+- name: install epel release
+  package:
+    name: epel-release
+    state: present
+- name: install python3.6
+  package:
+    name: python36
+    state: present
+- name: install PIP
+  package: 
+    name: python34-pip
+- name: Update PIP
+  shell: pip3 install --upgrade pip 

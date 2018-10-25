@@ -1,0 +1,7 @@
+---
+# vars file for project_setup
+project_git_url: 'https://github.com/K-DOT/it_blog.git'
+venv_dir: '/root/.virtualenv/itandwisdom'
+project_dir: '/var/itandwisdom/'
+branch: 'dev'
+project_name: 'it_blog'
