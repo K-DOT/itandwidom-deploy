@@ -1,7 +1,9 @@
+# Ansible
+  
 Deploys application in !!!DEV!!! environment
 Uses: https://github.com/elastic/ansible-elasticsearch
 
-Usage example:
+Example playbook:
 
 ```
 - hosts: dev
