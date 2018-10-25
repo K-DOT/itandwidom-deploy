@@ -22,22 +22,23 @@
     state: directory
     mode: 0755
 - name: clone project
-  shell:
-    cmd: 'git clone -b {{ branch }}  {{ project_git_url }}'
-    chdir: '{{ project_dir }}'
+  git:
+    repo: '{{ project_git_url }}'
+    clone: yes
+    dest: '{{ project_dir }}'
 - name: Install requirements
   pip:
     requirements: 'requirements.txt'
     virtualenv: '{{ venv_dir }}'
-    chdir: '{{ project_dir }}/{{ project_name }}'
+    chdir: '{{ project_dir }}'
 - name: Copy secret key
   copy:
     src: '{{ role_path }}/files/secret_key.py'
-    dest: '{{ project_dir }}/{{ project_name }}/{{ project_name }}/secret_key.py'
+    dest: '{{ project_dir }}/{{ project_name }}/secret_key.py'
 - name: Manage
   django_manage:
     command: '{{ item }}'
-    app_path: '{{ project_dir }}/{{ project_name }}'
+    app_path: '{{ project_dir }}'
     virtualenv: '{{ venv_dir }}'
   with_items:
     - "migrate"
@@ -46,7 +47,7 @@
 - name: Create superuser
   shell:
     cmd: "echo \"from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@{{ project_name }}.com', 'changemeASAP')\" | {{ venv_dir }}/bin/python manage.py shell"
-    chdir:  '{{ project_dir }}/{{ project_name }}'
+    chdir:  '{{ project_dir }}'
 - debug:
     msg: "Created user 'admin' with password changemeASAP. Change this immediately!"
 - name: Create service file for dev 

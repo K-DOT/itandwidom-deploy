@@ -3,7 +3,7 @@ Description=service_description
 After=network.target
 
 [Service]
-WorkingDirectory={{ project_dir }}/{{ project_name }}
+WorkingDirectory={{ project_dir }}
 ExecStart={{ venv_dir }}/bin/python manage.py runserver 0.0.0.0:80
 Type=simple
 
