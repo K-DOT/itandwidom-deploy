@@ -26,6 +26,10 @@
     repo: '{{ project_git_url }}'
     clone: yes
     dest: '{{ project_dir }}'
+- name: install virtualenv
+  pip:
+    name: virtualenv
+    executable: '/usr/local/bin/pip'
 - name: Install requirements
   pip:
     requirements: 'requirements.txt'
