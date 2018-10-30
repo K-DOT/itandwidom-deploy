@@ -26,6 +26,7 @@
     repo: '{{ project_git_url }}'
     clone: yes
     dest: '{{ project_dir }}'
+    version: 'dev'
 - name: install virtualenv
   pip:
     name: virtualenv
@@ -58,8 +59,10 @@
   template:
     src: '{{ role_path }}/templates/itandwisdom.service.j2'
     dest: /etc/systemd/system/itandwisdom.service
+  when: type_ == 'dev'
 - name: Start service
   systemd:
     state: restarted
     daemon_reload: yes
     name: itandwisdom
+  when: type_ == 'dev'

@@ -1,0 +1,41 @@
+---
+# tasks file for nginx_setup
+- name: Install nginx
+  package: 
+    name: nginx
+    state: latest
+- name: Create virtualhost
+  template:
+    src: '{{ role_path }}/templates/itandwisdom.conf.j2'
+    dest: '/etc/nginx/conf.d/itandwisdom.conf' 
+- name: Create gunicorn user
+  user:
+    name: gunicorn
+    shell: /bin/false
+    groups: nginx
+    append: yes
+- name: Set permisions
+  file:
+    path: '{{ project_dir }}'
+    owner: gunicorn
+    group: nginx
+    # when specifying mode using octal numbers, add a leading 0
+    mode: 0770
+    recurse: yes
+- name: Chmod +x 
+  file:
+    path: '{{ venv_dir }}'
+    mode: 'a+x'
+    recurse: yes
+- name: Create Gunicorn service
+  template:
+    src: '{{ role_path }}/templates/gunicorn.service.j2'
+    dest: '/etc/systemd/system/gunicorn.service'
+- name: Start Gunicorn and nginx 
+  systemd:
+    name: '{{ item }}'
+    state: restarted
+    daemon_reload: yes
+  with_items:
+    - 'gunicorn'
+    - 'nginx'

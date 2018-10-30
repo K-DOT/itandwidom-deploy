@@ -1,0 +1,6 @@
+---
+# defaults file for nginx_setup
+project_dir: '/var/itandwisdom/'
+sock: '{{ project_dir }}/itandwisdom.sock'
+venv_dir: '/root/.virtualenv/itandwisdom/'
+project_name: 'it_blog'
